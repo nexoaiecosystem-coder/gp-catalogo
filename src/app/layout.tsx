@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const dmSans = DM_Sans({
+// DM Sans guardada en el repo (no depende de Google Fonts al compilar).
+const dmSans = localFont({
+  src: "./fonts/dm-sans-latin.woff2",
+  weight: "400 800",
   variable: "--font-dm",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
