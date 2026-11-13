@@ -68,7 +68,8 @@ function labelOnCyl(r, y, h, tex, arc = Math.PI * 0.9) {
 window.__lib = { THREE, M, lathe, cyl, rbox, labelOnCyl, labelTex, canvasTex, noise, kraftTex, FACE, RoundedBoxGeometry };
 
 // ── Escena y cámara (ángulo isométrico desde arriba y de costado) ──
-window.renderProduct = (kind, opts) => {
+window.renderProduct = (kind, opts, mask = false) => {
+  let seed = 12345; Math.random = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; // mismo modelo en ambas pasadas
   const scene = new THREE.Scene(); scene.environment = ENV;
   const key = new THREE.DirectionalLight('#ffffff', 2.2); key.position.set(-2.5, 12, 3.5); key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 14; key.shadow.blurSamples = 25; key.shadow.bias = -0.0005;
@@ -76,7 +77,8 @@ window.renderProduct = (kind, opts) => {
   scene.add(key); scene.add(new THREE.HemisphereLight('#ffffff', '#d8d4cc', 0.6));
   const obj = MODELS[kind](opts, window.__lib); obj.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
   scene.add(obj);
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.18 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+  if (mask) { const white = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }); obj.traverse((o) => { if (o.isMesh) o.material = white; }); }
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.ShadowMaterial({ opacity: 0.18 })); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; if (!mask) scene.add(floor);
   // encuadre automático
   const box = new THREE.Box3().setFromObject(obj); const size = box.getSize(new THREE.Vector3()); const center = box.getCenter(new THREE.Vector3());
   const radius = size.length() / 2;

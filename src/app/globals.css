@@ -67,6 +67,14 @@ body.catalog-body {
 .cover-kicker { margin: 34px 0 6px; font-size: 13px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--lime); }
 .cover-title { margin: 0; font-size: clamp(36px, 6vw, 60px); line-height: 1.02; font-weight: 800; color: var(--cream); letter-spacing: -.02em; }
 .cover-sub { margin: 16px 0 0; color: rgba(244,242,234,.75); font-size: 16px; }
+.contact-chips { margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; position: relative; }
+.contact-chips a { display: inline-flex; align-items: center; gap: 8px; background: var(--lime); color: var(--g-950); font-weight: 700; font-size: 13.5px; text-decoration: none; border-radius: 999px; padding: 7px 15px 7px 8px; }
+.contact-chips a svg { width: 26px; height: 26px; padding: 4px; border-radius: 50%; background: var(--g-900); color: var(--lime); }
+.contact-chips a:hover { background: var(--cream); }
+.contact-inline { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.contact-inline a { display: inline-flex; align-items: center; gap: 5px; color: var(--g-700); font-weight: 700; text-decoration: none; }
+.contact-inline a svg { width: 15px; height: 15px; color: var(--teal); }
+.contact-inline a:hover span { text-decoration: underline; }
 .cover-contact { margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; position: relative; }
 .cover-contact span, .cover-contact a { background: var(--lime); text-decoration: none; color: var(--g-950); font-weight: 700; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 500; }
 .sheet-back { min-height: 520px; }
@@ -80,6 +88,10 @@ body.catalog-body {
 .index-title span { display: block; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
 .index-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
 .index-tile { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto auto; column-gap: 8px; text-decoration: none; color: inherit; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px 12px; background: #fff; transition: border-color .15s, transform .15s; }
+.index-tile-custom { background: var(--g-900); border-color: var(--g-900); }
+.index-tile-custom .index-name { color: var(--cream); }
+.index-tile-custom .index-num { color: var(--lime); }
+.index-tile-custom .index-meta { color: rgba(244,242,234,.7); }
 .index-tile:hover { border-color: var(--teal); transform: translateY(-2px); }
 .index-img { grid-column: 1 / -1; aspect-ratio: 4/3; display: grid; place-items: center; border-radius: 10px; margin-bottom: 8px; background: radial-gradient(circle at 50% 42%, #f7faf5 0%, #e0eadb 60%, #ccdcc4 100%); }
 .index-img img, .index-img svg { width: 78%; height: 100%; object-fit: contain; }
@@ -107,8 +119,10 @@ body.catalog-body {
 .card-rows li b { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 12px; color: var(--g-700); background: var(--mint-50); border-radius: 5px; padding: 1px 6px; white-space: nowrap; }
 
 /* Packaging personalizado */
-.custom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-.custom { border: 1px solid var(--line); border-radius: 14px; padding: 16px; background: var(--teal-soft); }
+.custom-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .custom-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+.custom { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px 16px; background: #fff; break-inside: avoid; }
+.custom-img { margin-bottom: 12px; }
 .custom h3 { margin: 0; font-size: 16px; color: var(--g-900); }
 .custom p { margin: 6px 0 10px; font-size: 13.5px; color: var(--ink-soft); }
 .custom dl { margin: 0; font-size: 13px; display: grid; gap: 2px; }
@@ -133,7 +147,8 @@ body.catalog-body {
   .card-rows li { flex-direction: column; gap: 2px; }
   .sheet-cover { min-height: 540px; }
   .cover-logo { width: 200px; height: 200px; }
-  .sheet-foot span:first-child { display: none; }
+  .sheet-foot .contact-inline span { display: none; }
+  .sheet-foot .contact-inline a svg { width: 20px; height: 20px; }
 }
 
 /* ── Impresión / PDF: márgenes A4, tapas a sangre ──────────────────── */

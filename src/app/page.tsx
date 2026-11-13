@@ -1,9 +1,19 @@
-import { CONTACT } from "@/lib/constants";
 import { customizableProducts } from "@/lib/personalizado";
 import { getCatalog, type Family, type Section } from "./_lib";
 import { illustrationFor } from "./_illustrations";
 import { Illustration } from "./_components/Illustration";
 import { Toolbar } from "./_components/Toolbar";
+import { ContactLinks } from "./_components/Contact";
+
+// Imágenes de los productos personalizables (renders con "TU LOGO").
+const CUSTOM_IMG: Record<string, string> = {
+  "cust-bolsas": "custom-bolsas",
+  "cust-vasos": "custom-vasos",
+  "cust-cajas": "custom-cajas",
+  "cust-papel-antigrasa": "custom-papel",
+  "cust-etiquetas": "custom-etiquetas",
+};
+const LOGO = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/logo-gpacking-2026.png`;
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -31,10 +41,7 @@ function SheetChrome({ page, children }: { page: number; children: React.ReactNo
       </div>
       {children}
       <div className="sheet-foot">
-        <span>
-          <a href={`https://wa.me/${CONTACT.whatsappNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp {CONTACT.whatsappDisplay}</a> · <a href={CONTACT.instagramUrl} target="_blank" rel="noopener noreferrer">{CONTACT.instagramHandle}</a> ·{" "}
-          {CONTACT.address}
-        </span>
+        <ContactLinks variant="inline" />
         <span className="sheet-num">{pad(page)}</span>
       </div>
     </>
@@ -48,7 +55,7 @@ function Cover({ total, sections }: { total: number; sections: number }) {
       <div className="cover-ring cover-ring-2" aria-hidden />
       <div className="cover-logo">
         {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
-        <img src={`${BASE}/logo-gpacking.png`} alt="G Packing" />
+        <img src={LOGO} alt="G Packing" />
       </div>
       <p className="cover-kicker">Catálogo de productos · 2026</p>
       <h1 className="cover-title">
@@ -58,11 +65,7 @@ function Cover({ total, sections }: { total: number; sections: number }) {
       <p className="cover-sub">
         {total} productos en {sections} categorías para gastronomía, comercios y empresas.
       </p>
-      <div className="cover-contact">
-        <a href={`https://wa.me/${CONTACT.whatsappNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp {CONTACT.whatsappDisplay}</a>
-        <a href={CONTACT.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram {CONTACT.instagramHandle}</a>
-        <span>{CONTACT.address}</span>
-      </div>
+      <ContactLinks />
     </section>
   );
 }
@@ -91,6 +94,17 @@ function Index({ catalog }: { catalog: Section[] }) {
               </li>
             );
           })}
+          <li>
+            <a href="#personalizado" className="index-tile index-tile-custom">
+              <div className="index-img">
+                {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
+                <img src={`${BASE}/personalizado/custom-bolsas.webp`} alt="Packaging personalizado" loading="lazy" />
+              </div>
+              <span className="index-num">{pad(catalog.length + 1)}</span>
+              <span className="index-name">Packaging personalizado</span>
+              <span className="index-meta">Con tu logo</span>
+            </a>
+          </li>
         </ol>
       </SheetChrome>
     </section>
@@ -135,13 +149,13 @@ function SectionSheet({ section, index }: { section: Section; index: number }) {
   );
 }
 
-function BackCover({ page }: { page: number }) {
+function BackCover({ page, num }: { page: number; num: number }) {
   return (
     <>
-      <section className="sheet" data-section>
+      <section id="personalizado" className="sheet" data-section>
         <SheetChrome page={page}>
           <header className="sec-band sec-band-teal">
-            <span className="sec-num">★</span>
+            <span className="sec-num">{pad(num)}</span>
             <div>
               <h2 className="sec-name">Packaging personalizado</h2>
               <p className="sec-meta">Tu marca en cajas, bolsas, vasos y papel antigrasa</p>
@@ -150,6 +164,12 @@ function BackCover({ page }: { page: number }) {
           <div className="custom-grid">
             {customizableProducts.map((c) => (
               <article key={c.id} className="custom" data-search={`${c.name} personalizado ${c.description}`}>
+                {CUSTOM_IMG[c.id] && (
+                  <div className="card-img custom-img">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
+                    <img src={`${BASE}/personalizado/${CUSTOM_IMG[c.id]}.webp`} alt={`${c.name} con tu logo`} loading="lazy" />
+                  </div>
+                )}
                 <h3>{c.name}</h3>
                 <p>{c.description}</p>
                 <dl>
@@ -171,7 +191,7 @@ function BackCover({ page }: { page: number }) {
         <div className="cover-ring" aria-hidden />
         <div className="cover-logo">
           {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
-          <img src={`${BASE}/logo-gpacking.png`} alt="G Packing" />
+          <img src={LOGO} alt="G Packing" />
         </div>
         <p className="back-text">
           Somos una empresa dedicada a la venta de <b>productos de limpieza y packaging</b> para todos
@@ -180,12 +200,7 @@ function BackCover({ page }: { page: number }) {
           proveedores.
         </p>
         <p className="back-claim">¡Hacemos que tu presentación se destaque!</p>
-        <div className="cover-contact">
-          <a href={`https://wa.me/${CONTACT.whatsappNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp {CONTACT.whatsappDisplay}</a>
-          <a href={CONTACT.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram {CONTACT.instagramHandle}</a>
-          <span>{CONTACT.email}</span>
-          <span>{CONTACT.address}</span>
-        </div>
+        <ContactLinks withEmail />
       </section>
     </>
   );
@@ -208,7 +223,7 @@ export default function CatalogoPage() {
           No encontramos productos con esa búsqueda. Consultanos: trabajamos con una amplia red de
           proveedores.
         </p>
-        <BackCover page={catalog.length + 3} />
+        <BackCover page={catalog.length + 3} num={catalog.length + 1} />
       </main>
     </>
   );

@@ -2,10 +2,13 @@
 import sys, glob, os
 from PIL import Image, ImageFilter
 src, out = sys.argv[1:3]; os.makedirs(out, exist_ok=True); SIZE = 400
-for f in sorted(glob.glob(f"{src}/*.png")):
+for f in sorted(g for g in glob.glob(f"{src}/*.png") if not g.endswith(".mask.png")):
     im = Image.open(f).convert("RGBA").resize((400, 400), Image.LANCZOS)
-    a = im.split()[3]
-    obj = a.point(lambda v: 255 if v > 140 else 0).filter(ImageFilter.MedianFilter(3))
+    mf = f[:-4] + ".mask.png"
+    if os.path.exists(mf):  # silueta completa (incluye plástico transparente)
+        obj = Image.open(mf).convert("RGBA").resize((400, 400), Image.LANCZOS).split()[3].point(lambda v: 255 if v > 100 else 0)
+    else:
+        obj = im.split()[3].point(lambda v: 255 if v > 140 else 0).filter(ImageFilter.MedianFilter(3))
     ring = obj.filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.GaussianBlur(0.7))
     edge = Image.new("RGBA", im.size, (96, 112, 105, 0)); edge.putalpha(ring.point(lambda v: int(v * 0.9)))
     comp = Image.new("RGBA", im.size, (0, 0, 0, 0)); comp.alpha_composite(edge); comp.alpha_composite(im)

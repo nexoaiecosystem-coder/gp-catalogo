@@ -34,7 +34,7 @@ export function Toolbar({ sections }: Props) {
       <div className="toolbar-inner">
         <a href="#portada" className="toolbar-brand" aria-label="Ir a la portada">
           {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
-          <img src={`${BASE}/logo-gpacking.png`} alt="G Packing" />
+          <img src={`${BASE}/logo-gpacking-2026.png`} alt="G Packing" />
         </a>
         <select
           aria-label="Ir a una categoría"
@@ -53,6 +53,7 @@ export function Toolbar({ sections }: Props) {
               {s.name}
             </option>
           ))}
+          <option value="personalizado">Packaging personalizado</option>
         </select>
         <div className="toolbar-search">
           <Search size={16} aria-hidden />

@@ -29,7 +29,63 @@ function rod(L, r, len, mat, from, to) {
 }
 const WOOD = '#d9b98a';
 
+function logoBadge(x, cx, cy, r, ink = '#123d2a') {
+  x.save(); x.fillStyle = ink; x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill();
+  x.fillStyle = '#ffffff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.font = `800 ${r * 0.42}px Arial`; x.fillText('TU', cx, cy - r * 0.22); x.fillText('LOGO', cx, cy + r * 0.26); x.restore();
+}
+
 export const MODELS = {
+  customBag(o, L) {
+    const { THREE, M, kraftTex, canvasTex, noise } = L;
+    const g = group(L); const W = 1.8, H = 2.6, D = 1.0;
+    const front = canvasTex(512, 740, (x, w, h) => { noise(x, w, h, '#a87a45', 20, 900); logoBadge(x, w / 2, h * 0.5, w * 0.26); });
+    const plain = kraftTex();
+    const mats = [M.paper(plain), M.paper(plain), M.paper(plain), M.paper(plain), M.paper(front), M.paper(plain)];
+    const b = new THREE.Mesh(new THREE.BoxGeometry(W, H, D), mats); b.position.y = H / 2; g.add(b);
+    const inside = new THREE.Mesh(new THREE.PlaneGeometry(W - 0.04, D - 0.04), M.matte('#6b4b2a')); inside.rotation.x = -Math.PI / 2; inside.position.y = H + 0.001; g.add(inside);
+    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.04, 12, 48, Math.PI), M.paper(kraftTex())); handle.position.set(0, H, 0); g.add(handle);
+    g.rotation.y = 0.35; return g;
+  },
+  customCup(o, L) {
+    const { THREE, M, canvasTex, noise, FACE } = L;
+    const g = group(L);
+    const tex = canvasTex(1024, 512, (x, w, h) => { noise(x, w, h, '#f4f1e8', 6); x.fillStyle = '#123d2a'; x.fillRect(0, h * 0.82, w, h * 0.18); logoBadge(x, w * 0.5, h * 0.45, h * 0.26); });
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.62, 2.95, 96, 1, true, FACE - Math.PI, Math.PI * 2), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6, side: THREE.DoubleSide }));
+    body.position.y = 1.5; g.add(body);
+    g.add(L.cyl(0.62, 0.04, M.matte('#f4f1e8'), 0));
+    const lid = L.lathe([[0, 3.2], [0.5, 3.18], [0.86, 3.08], [0.95, 2.98], [0.93, 2.92]], M.plastic('#f6f6f2', 0.35)); lid.material.side = THREE.DoubleSide; g.add(lid);
+    return g;
+  },
+  customBox(o, L) {
+    const { THREE, M, kraftTex, canvasTex, noise } = L;
+    const g = group(L);
+    const topTex = canvasTex(512, 512, (x, w, h) => { noise(x, w, h, '#a87a45', 20, 900); logoBadge(x, w / 2, h / 2, w * 0.24); });
+    const side = kraftTex();
+    const mats = [M.paper(side), M.paper(side), M.paper(topTex), M.paper(side), M.paper(side), M.paper(side)];
+    const b = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.55, 3.4), mats); b.position.y = 0.28; g.add(b);
+    return g;
+  },
+  customPaper(o, L) {
+    const { THREE, canvasTex, noise } = L;
+    const g = group(L);
+    const tex = canvasTex(768, 768, (x, w, h) => { noise(x, w, h, '#fbfaf5', 6); for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) { x.globalAlpha = 0.85; logoBadge(x, 96 + c * 192 + (r % 2) * 96, 96 + r * 192, 52, '#1f5c3d'); } x.globalAlpha = 1; });
+    const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, side: THREE.DoubleSide });
+    for (let i = 0; i < 5; i++) { const sh = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.012, 3.2), [mat, mat, mat, mat, mat, mat]); sh.position.y = 0.01 + i * 0.014; sh.rotation.y = (i - 2) * 0.05; g.add(sh); }
+    const fold = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 1.2), mat); fold.position.set(0, 0.62, -1.15); fold.rotation.x = -0.9; g.add(fold);
+    return g;
+  },
+  customLabels(o, L) {
+    const { THREE, M, lathe, canvasTex } = L;
+    const g = group(L);
+    const tex = canvasTex(1024, 256, (x, w, h) => { x.fillStyle = '#ffffff'; x.fillRect(0, 0, w, h); for (let i = 0; i < 4; i++) logoBadge(x, 128 + i * 256, h / 2, 96, i % 2 ? '#5fae3e' : '#123d2a'); });
+    const roll = lathe([[0.55, 0], [1.3, 0], [1.32, 0.03], [1.32, 0.9], [1.3, 0.93], [0.55, 0.93]], new THREE.MeshStandardMaterial({ color: '#f7f7f4', roughness: 0.6 })); g.add(roll);
+    const core = lathe([[0.45, 0], [0.55, 0], [0.55, 0.93], [0.45, 0.93]], M.matte('#c9a77a')); core.material.side = THREE.DoubleSide; g.add(core);
+    const strip = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.6), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.5 }));
+    strip.rotation.x = -Math.PI / 2; strip.position.set(1.4, 0.02, 1.2); strip.rotation.z = -0.5; g.add(strip);
+    return g;
+  },
+
   jug(o, L) {
     const { THREE, M, rbox, cyl, labelTex, RoundedBoxGeometry } = L;
     const g = group(L); const W = 2.2, H = 3.4, D = 1.7;
@@ -198,14 +254,33 @@ export const MODELS = {
   },
   glove(o, L) {
     const { THREE, M } = L;
-    const g = group(L); const mat = M.plastic(o.color, 0.5);
-    const hand = new THREE.Group();
-    const palm = box(L, 1.5, 0.32, 1.7, mat, 0.15); palm.position.set(0, 0.16, 0); hand.add(palm);
-    const cuff = box(L, 1.35, 0.3, 1.6, mat, 0.14); cuff.position.set(0, 0.15, 1.55); hand.add(cuff);
-    const fingers = [[-0.54, 1.15], [-0.18, 1.35], [0.18, 1.3], [0.53, 1.05]];
-    for (const [x, len] of fingers) { const f = new THREE.Mesh(new THREE.CapsuleGeometry(0.17, len, 8, 24), mat); f.rotation.x = Math.PI / 2; f.position.set(x, 0.17, -0.85 - len / 2); hand.add(f); }
-    const th = new THREE.Mesh(new THREE.CapsuleGeometry(0.19, 0.9, 8, 24), mat); th.rotation.x = Math.PI / 2; th.rotation.y = -0.9; th.position.set(-1.05, 0.18, -0.15); hand.add(th);
-    hand.rotation.y = 0.6; g.add(hand); return g;
+    // Silueta de guante de una sola pieza (palma hacia arriba), con el pulgar unido a la palma.
+    const sh = new THREE.Shape();
+    sh.moveTo(-0.62, -2.0);                       // puño, lado izquierdo
+    sh.lineTo(-0.66, -0.75);
+    sh.bezierCurveTo(-0.9, -0.55, -1.2, -0.2, -1.32, 0.18);   // base del pulgar
+    sh.bezierCurveTo(-1.42, 0.5, -1.18, 0.62, -1.0, 0.42);    // punta del pulgar
+    sh.bezierCurveTo(-0.86, 0.26, -0.74, 0.1, -0.62, 0.05);   // vuelve a la palma (unido)
+    // dedos separados por una hendidura en "V" redondeada
+    const fingers = [[-0.62, -0.34, 1.3], [-0.29, 0.0, 1.6], [0.05, 0.34, 1.52], [0.39, 0.64, 1.15]];
+    const valley = 0.28;
+    fingers.forEach(([x0, x1, top], i) => {
+      const mid = (x0 + x1) / 2, r = (x1 - x0) / 2;
+      sh.lineTo(x0, top - r);
+      sh.absarc(mid, top - r, r, Math.PI, 0, true);
+      if (i < 3) { const nx = fingers[i + 1][0]; sh.lineTo(x1, valley + 0.08); sh.quadraticCurveTo((x1 + nx) / 2, valley - 0.04, nx, valley + 0.08); }
+      else sh.lineTo(x1, 0.15);
+    });
+    sh.bezierCurveTo(0.68, -0.2, 0.7, -0.9, 0.66, -1.2);
+    sh.lineTo(0.62, -2.0);
+    sh.lineTo(-0.62, -2.0);
+    const geo = new THREE.ExtrudeGeometry(sh, { depth: 0.12, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.06, bevelSegments: 10, curveSegments: 32 });
+    geo.center();
+    const mat = new THREE.MeshPhysicalMaterial({ color: o.color, roughness: 0.42, clearcoat: 0.35, sheen: 0.3 });
+    const m = new THREE.Mesh(geo, mat);
+    m.rotation.set(-0.55, 0.75, 0.12); m.position.y = 1.9;
+    const cuff = new THREE.Mesh(new THREE.TorusGeometry(0.66, 0.06, 12, 48, Math.PI), mat);
+    const g = group(L); g.add(m); return g;
   },
   rollbox(o, L) {
     const { THREE, canvasTex, noise } = L;
