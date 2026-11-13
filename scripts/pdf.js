@@ -29,7 +29,7 @@ const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/cs
   await page.evaluate(() => {
     for (const img of document.querySelectorAll(".card-img img, .index-img img")) {
       const c = document.createElement("canvas"); c.width = c.height = 300;
-      const x = c.getContext("2d"); const g = x.createRadialGradient(150, 126, 0, 150, 150, 212); g.addColorStop(0, "#f6faf8"); g.addColorStop(0.55, "#e2efea"); g.addColorStop(1, "#c9e0d8"); x.fillStyle = g; x.fillRect(0, 0, 300, 300);
+      const x = c.getContext("2d"); const g = x.createRadialGradient(150, 126, 0, 150, 150, 212); g.addColorStop(0, "#f7faf5"); g.addColorStop(0.55, "#e4eddf"); g.addColorStop(1, "#ccdcc4"); x.fillStyle = g; x.fillRect(0, 0, 300, 300);
       x.drawImage(img, 0, 0, 300, 300); img.src = c.toDataURL("image/jpeg", 0.8);
     }
   });
