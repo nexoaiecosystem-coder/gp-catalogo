@@ -159,7 +159,17 @@ body.catalog-body {
   .card-name { font-size: 14px; }
   .card-rows { font-size: 12px; }
   .card-rows li { flex-direction: column; gap: 2px; }
-  .sheet-cover { min-height: 540px; }
+  /* Portada = pantalla completa debajo de la barra, contenido centrado */
+  .sheets { padding-top: 12px; }
+  .sheet-cover:not(.sheet-back) { height: calc(100svh - var(--tb-h, 104px) - 24px); min-height: 0; padding: 24px 18px; justify-content: center; gap: clamp(10px, 2.6svh, 26px); }
+  .sheet-cover:not(.sheet-back) .cover-logo { width: min(250px, 27svh, 70vw); height: min(250px, 27svh, 70vw); }
+  .sheet-cover:not(.sheet-back) .cover-kicker { margin: 0; }
+  .sheet-cover:not(.sheet-back) .cover-title { margin: -6px 0 0; }
+  .sheet-cover:not(.sheet-back) .cover-title { font-size: clamp(30px, 9.5vw, 42px); }
+  .sheet-cover:not(.sheet-back) .cover-sub { font-size: 14.5px; margin-top: 0; }
+  .sheet-cover:not(.sheet-back) .contact-chips { margin-top: 0; gap: 8px; }
+  .sheet-cover:not(.sheet-back) .contact-chips a { font-size: 13px; padding: 5px 13px 5px 6px; }
+  .sheet-cover:not(.sheet-back) .contact-chips a svg { width: 24px; height: 24px; }
   .cover-logo { width: 200px; height: 200px; }
   .sheet-foot .contact-inline span { display: none; }
   .sheet-foot .contact-inline a svg { width: 20px; height: 20px; }

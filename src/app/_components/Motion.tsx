@@ -61,7 +61,15 @@ export function scrollToSection(id: string) {
 export function Motion() {
   useEffect(() => {
     const root = document.documentElement;
-    if (reducedMotion()) return;
+    // Alto real de la barra superior: la portada ocupa exactamente la pantalla que queda.
+    const toolbar = document.querySelector<HTMLElement>(".toolbar");
+    const setToolbarH = () => root.style.setProperty("--tb-h", `${toolbar?.offsetHeight ?? 0}px`);
+    setToolbarH();
+    window.addEventListener("resize", setToolbarH);
+    // Al abrir sin #seccion, siempre arranca en la portada.
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    if (!location.hash) window.scrollTo(0, 0);
+    if (reducedMotion()) return () => window.removeEventListener("resize", setToolbarH);
     root.classList.add("anim");
 
     // Índice de cascada dentro de cada grupo
@@ -108,6 +116,7 @@ export function Motion() {
     }
 
     return () => {
+      window.removeEventListener("resize", setToolbarH);
       io.disconnect();
       ioSheets.disconnect();
       document.removeEventListener("click", onClick);
