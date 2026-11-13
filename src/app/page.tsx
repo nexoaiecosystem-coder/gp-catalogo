@@ -1,96 +1,214 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { CONTACT } from "@/lib/constants";
 import { customizableProducts } from "@/lib/personalizado";
-import { getCatalog } from "./_lib";
-import { CatalogSearch } from "./_components/CatalogSearch";
+import { getCatalog, type Family, type Section } from "./_lib";
+import { illustrationFor } from "./_illustrations";
+import { Illustration } from "./_components/Illustration";
+import { Toolbar } from "./_components/Toolbar";
 
-export const metadata: Metadata = {
-  title: "Catálogo de productos | G Packing",
-  description:
-    "Catálogo de G Packing: packaging, descartables, limpieza y papelería. Cada producto con su medida y código.",
-  openGraph: {
-    title: "Catálogo de productos | G Packing",
-    description: "Packaging, descartables, limpieza y papelería. Medidas y códigos de cada producto.",
-    type: "website",
-    locale: "es_UY",
-  },
-};
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const pad = (n: number) => String(n).padStart(2, "0");
 
-export default function CatalogoDigitalPage() {
+function Picture({ family, className }: { family: Family; className?: string }) {
+  return (
+    <div className={className}>
+      {family.photo ? (
+        // eslint-disable-next-line @next/next/no-img-element -- export estático sin optimizador de imágenes
+        <img src={family.photo} alt={family.name} loading="lazy" />
+      ) : (
+        <Illustration spec={illustrationFor(family.name)} id={`il-${family.id}`} />
+      )}
+    </div>
+  );
+}
+
+/** Encabezado y pie de cada lámina, como en la lista de precios impresa. */
+function SheetChrome({ page, children }: { page: number; children: React.ReactNode }) {
+  return (
+    <>
+      <div className="sheet-top">
+        <span>GPACKING</span>
+        <span>PACKAGING Y LIMPIEZA</span>
+      </div>
+      {children}
+      <div className="sheet-foot">
+        <span>
+          {CONTACT.whatsappDisplay} · {CONTACT.instagramHandle} · {CONTACT.address}
+        </span>
+        <span className="sheet-num">{pad(page)}</span>
+      </div>
+    </>
+  );
+}
+
+function Cover({ total, sections }: { total: number; sections: number }) {
+  return (
+    <section id="portada" className="sheet sheet-cover">
+      <div className="cover-ring" aria-hidden />
+      <div className="cover-ring cover-ring-2" aria-hidden />
+      <div className="cover-logo">
+        {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
+        <img src={`${BASE}/logo-gpacking.png`} alt="G Packing" />
+      </div>
+      <p className="cover-kicker">Catálogo de productos · 2026</p>
+      <h1 className="cover-title">
+        Todo en empaque
+        <br />y limpieza
+      </h1>
+      <p className="cover-sub">
+        {total} productos en {sections} categorías para gastronomía, comercios y empresas.
+      </p>
+      <div className="cover-contact">
+        <span>{CONTACT.whatsappDisplay}</span>
+        <span>{CONTACT.instagramHandle}</span>
+        <span>{CONTACT.address}</span>
+      </div>
+    </section>
+  );
+}
+
+function Index({ catalog }: { catalog: Section[] }) {
+  return (
+    <section className="sheet sheet-index">
+      <SheetChrome page={2}>
+        <h2 className="index-title">
+          <span>Índice</span>
+          Categorías
+        </h2>
+        <ol className="index-grid">
+          {catalog.map((s, i) => {
+            const cover = s.families.find((f) => f.photo) ?? s.families[0];
+            return (
+              <li key={s.slug}>
+                <a href={`#${s.slug}`} className="index-tile">
+                  <Picture family={cover} className="index-img" />
+                  <span className="index-num">{pad(i + 1)}</span>
+                  <span className="index-name">{s.name}</span>
+                  <span className="index-meta">
+                    {s.count} productos · {s.prefix}
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ol>
+      </SheetChrome>
+    </section>
+  );
+}
+
+function SectionSheet({ section, index }: { section: Section; index: number }) {
+  return (
+    <section id={section.slug} className="sheet" data-section>
+      <SheetChrome page={index + 3}>
+        <header className="sec-band">
+          <span className="sec-num">{pad(index + 1)}</span>
+          <div>
+            <h2 className="sec-name">{section.name}</h2>
+            <p className="sec-meta">
+              {section.count} productos · códigos <b>{section.prefix}</b>
+            </p>
+          </div>
+        </header>
+        <div className="cards">
+          {section.families.map((f) => (
+            <article
+              key={f.id}
+              className="card"
+              data-search={`${f.name} ${f.rows.map((r) => `${r.detail} ${r.code}`).join(" ")}`}
+            >
+              <Picture family={f} className="card-img" />
+              <h3 className="card-name">{f.name}</h3>
+              <ul className="card-rows">
+                {f.rows.map((r) => (
+                  <li key={r.code}>
+                    <span>{r.detail || "—"}</span>
+                    <b>{r.code}</b>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </SheetChrome>
+    </section>
+  );
+}
+
+function BackCover({ page }: { page: number }) {
+  return (
+    <>
+      <section className="sheet" data-section>
+        <SheetChrome page={page}>
+          <header className="sec-band sec-band-teal">
+            <span className="sec-num">★</span>
+            <div>
+              <h2 className="sec-name">Packaging personalizado</h2>
+              <p className="sec-meta">Tu marca en cajas, bolsas, vasos y papel antigrasa</p>
+            </div>
+          </header>
+          <div className="custom-grid">
+            {customizableProducts.map((c) => (
+              <article key={c.id} className="custom" data-search={`${c.name} personalizado ${c.description}`}>
+                <h3>{c.name}</h3>
+                <p>{c.description}</p>
+                <dl>
+                  <div>
+                    <dt>Impresión</dt>
+                    <dd>{c.printColors}</dd>
+                  </div>
+                  <div>
+                    <dt>Mínimo</dt>
+                    <dd>{c.minQty}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+        </SheetChrome>
+      </section>
+      <section className="sheet sheet-cover sheet-back">
+        <div className="cover-ring" aria-hidden />
+        <div className="cover-logo">
+          {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
+          <img src={`${BASE}/logo-gpacking.png`} alt="G Packing" />
+        </div>
+        <p className="back-text">
+          Somos una empresa dedicada a la venta de <b>productos de limpieza y packaging</b> para todos
+          los rubros. Realizamos también <b>trabajos personalizados</b> adaptados a la imagen de tu
+          negocio. Si no encontrás algún producto, <b>consultanos</b>: contamos con una amplia red de
+          proveedores.
+        </p>
+        <p className="back-claim">¡Hacemos que tu presentación se destaque!</p>
+        <div className="cover-contact">
+          <span>WhatsApp {CONTACT.whatsappDisplay}</span>
+          <span>{CONTACT.instagramHandle}</span>
+          <span>{CONTACT.email}</span>
+          <span>{CONTACT.address}</span>
+        </div>
+      </section>
+    </>
+  );
+}
+
+export default function CatalogoPage() {
   const catalog = getCatalog();
-  const families = catalog.flatMap((s) => s.families);
   const total = catalog.reduce((n, s) => n + s.count, 0);
 
   return (
-    <div className="mx-auto max-w-[1080px] px-4 pb-14 pt-8 md:pt-12">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#868a84]">
-        Packaging y limpieza
-      </p>
-      <h1 className="mt-2 font-display text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-        Catálogo de productos
-      </h1>
-      <p className="mb-6 mt-2 max-w-[60ch] text-[#4b4f52]">
-        {total} productos en {catalog.length} categorías. Cada producto tiene su código: usalo para
-        consultar o hacer tu pedido.
-      </p>
-
-      <CatalogSearch families={families}>
-        <h2 className="border-b-2 border-[#17191b] pb-2 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-[#868a84]">
-          Categorías
-        </h2>
-        <ul className="grid sm:grid-cols-2 sm:gap-x-10">
-          {catalog.map((s) => (
-            <li key={s.slug}>
-              <Link
-                href={`/${s.slug}`}
-                className="group flex items-center gap-3 border-b border-[#e6e6e1] py-3.5"
-              >
-                <span className="w-11 shrink-0 font-mono text-[13px] font-semibold text-[#0d3d22]">
-                  {s.prefix}
-                </span>
-                <span className="min-w-0 flex-1 font-semibold group-hover:text-[#0d3d22]">{s.name}</span>
-                <span className="tabular text-sm text-[#868a84]">{s.count}</span>
-                <ChevronRight size={16} className="text-[#b3b8b1] group-hover:text-[#0d3d22]" />
-              </Link>
-            </li>
-          ))}
-        </ul>
-
-        <section className="mt-14">
-          <h2 className="font-display text-xl font-bold md:text-2xl">Packaging personalizado</h2>
-          <p className="mb-4 mt-1 max-w-[60ch] text-[#4b4f52]">
-            Imprimimos tu marca en bolsas, vasos, cajas, papel antigrasa y etiquetas. Consultanos por
-            cantidades y diseño.
-          </p>
-          <div className="hidden grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)] border-b border-t-2 border-b-[#e6e6e1] border-t-[#17191b] py-2 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-[#868a84] md:grid">
-            <span>Producto</span>
-            <span>Impresión</span>
-            <span>Mínimo</span>
-          </div>
-          <ul className="border-t-2 border-[#17191b] md:border-t-0">
-            {customizableProducts.map((c) => (
-              <li
-                key={c.id}
-                className="grid gap-1 border-b border-[#e6e6e1] py-3 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1fr)] md:gap-0"
-              >
-                <div>
-                  <h3 className="font-semibold">{c.name}</h3>
-                  <p className="text-[13px] text-[#868a84]">{c.description}</p>
-                </div>
-                <span className="text-sm text-[#4b4f52]">
-                  <span className="md:hidden">Impresión: </span>
-                  {c.printColors}
-                </span>
-                <span className="text-sm text-[#4b4f52]">
-                  <span className="md:hidden">Mínimo: </span>
-                  {c.minQty}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      </CatalogSearch>
-    </div>
+    <>
+      <Toolbar sections={catalog.map((s) => ({ slug: s.slug, name: s.name }))} />
+      <main className="sheets">
+        <Cover total={total} sections={catalog.length} />
+        <Index catalog={catalog} />
+        {catalog.map((s, i) => (
+          <SectionSheet key={s.slug} section={s} index={i} />
+        ))}
+        <p className="no-results">
+          No encontramos productos con esa búsqueda. Consultanos: trabajamos con una amplia red de
+          proveedores.
+        </p>
+        <BackCover page={catalog.length + 3} />
+      </main>
+    </>
   );
 }

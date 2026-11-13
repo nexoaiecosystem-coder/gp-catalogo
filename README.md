@@ -18,6 +18,11 @@ npm run dev
 - **Imágenes:** `public/fotos/<CÓDIGO>.webp`, renders 3D generados con `scripts/renders/` (ver su README). Sin imagen se muestra una ilustración (`src/app/_illustrations.ts`).
 - **Contacto y packaging personalizado:** `src/lib/constants.ts` y `src/lib/personalizado.ts`.
 
+## PDF descargable
+
+El botón **Descargar PDF** baja `public/catalogo-gpacking.pdf`, generado a partir del mismo sitio (una lámina por hoja A4).
+Si cambian productos o imágenes, regeneralo con `npm run pdf` (necesita Playwright con Chromium) y subí el PDF nuevo.
+
 ## Publicación
 
 Cada push a `main` se publica solo en GitHub Pages (`.github/workflows/deploy.yml`).
