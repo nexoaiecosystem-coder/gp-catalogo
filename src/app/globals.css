@@ -43,9 +43,12 @@ body.catalog-body {
 @media (max-width: 640px) {
   .toolbar-inner { flex-wrap: wrap; }
   .toolbar-brand img { height: 36px; width: 36px; }
+  .toolbar-inner { gap: 8px; }
   .toolbar-search { order: 5; flex-basis: 100%; }
   .toolbar-pdf span { display: none; }
-  .toolbar-select { flex: 1; }
+  .toolbar-pdf { padding: 0 11px; }
+  .toolbar-select { flex: 1; min-width: 0; }
+  .toolbar-inner > button { height: 38px; width: 38px; padding: 0; justify-content: center; flex: none; }
 }
 
 /* ── Láminas (páginas tipo PDF) ─────────────────────────────────────── */
@@ -141,6 +144,10 @@ body.catalog-body {
   .sec-num { font-size: 34px; }
   .sec-name { font-size: 22px; }
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .index-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .index-tile { padding: 8px 9px 10px; }
+  .index-name { font-size: 13px; }
+  .index-title { font-size: 28px; }
   .card { padding: 8px 9px 10px; }
   .card-name { font-size: 14px; }
   .card-rows { font-size: 12px; }
