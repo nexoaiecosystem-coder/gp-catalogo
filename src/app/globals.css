@@ -70,7 +70,7 @@ body.catalog-body {
 .cover-kicker { margin: 34px 0 6px; font-size: 13px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--lime); }
 .cover-title { margin: 0; font-size: clamp(36px, 6vw, 60px); line-height: 1.02; font-weight: 800; color: var(--cream); letter-spacing: -.02em; }
 .cover-sub { margin: 16px 0 0; color: rgba(244,242,234,.75); font-size: 16px; }
-.contact-chips { margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; position: relative; }
+.contact-chips { margin-top: 30px; display: flex; flex-wrap: nowrap; justify-content: center; gap: 10px; position: relative; }
 .contact-chips a { display: inline-flex; align-items: center; gap: 8px; background: var(--lime); color: var(--g-950); font-weight: 700; font-size: 13.5px; text-decoration: none; border-radius: 999px; padding: 7px 15px 7px 8px; }
 .contact-chips a svg { width: 26px; height: 26px; padding: 4px; border-radius: 50%; background: var(--g-900); color: var(--lime); }
 .contact-chips a:hover { background: var(--cream); }
@@ -167,9 +167,13 @@ body.catalog-body {
   .sheet-cover:not(.sheet-back) .cover-title { margin: -6px 0 0; }
   .sheet-cover:not(.sheet-back) .cover-title { font-size: clamp(30px, 9.5vw, 42px); }
   .sheet-cover:not(.sheet-back) .cover-sub { font-size: 14.5px; margin-top: 0; }
-  .sheet-cover:not(.sheet-back) .contact-chips { margin-top: 0; gap: 8px; }
-  .sheet-cover:not(.sheet-back) .contact-chips a { font-size: 13px; padding: 5px 13px 5px 6px; }
-  .sheet-cover:not(.sheet-back) .contact-chips a svg { width: 24px; height: 24px; }
+  /* Contacto en pirámide: WhatsApp e Instagram arriba, ubicación abajo */
+  .contact-chips { display: grid; grid-template-columns: auto auto; justify-content: center; gap: 8px; }
+  .contact-chips a:nth-child(3) { grid-column: 1 / -1; justify-self: center; }
+  .contact-chips a:nth-child(n + 4) { grid-column: 1 / -1; justify-self: center; }
+  .contact-chips a { font-size: 12.5px; padding: 5px 12px 5px 5px; gap: 6px; white-space: nowrap; }
+  .contact-chips a svg { width: 24px; height: 24px; }
+  .sheet-cover:not(.sheet-back) .contact-chips { margin-top: 0; }
   .cover-logo { width: 200px; height: 200px; }
   .sheet-foot .contact-inline span { display: none; }
   .sheet-foot .contact-inline a svg { width: 20px; height: 20px; }
