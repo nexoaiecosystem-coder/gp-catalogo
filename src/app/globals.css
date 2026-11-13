@@ -165,10 +165,79 @@ body.catalog-body {
   .sheet-foot .contact-inline a svg { width: 20px; height: 20px; }
 }
 
+/* ── Animaciones ─────────────────────────────────────────────────────
+   Solo con .anim en <html> (lo pone el script); sin JS, con "reducir
+   movimiento" o al imprimir, todo queda visible y estático. */
+:root { --ease-out: cubic-bezier(.16, 1, .3, 1); --ease-spring: cubic-bezier(.34, 1.56, .64, 1); }
+
+/* Portada: entrada al abrir */
+@keyframes logo-in { from { opacity: 0; transform: scale(.6) rotate(-25deg); } to { opacity: 1; transform: none; } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes ring-float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-14px, 12px) scale(1.03); } }
+@keyframes halo { 0%, 100% { box-shadow: 0 0 0 6px rgba(139,207,98,.25), 0 24px 60px -16px rgba(0,0,0,.6); } 50% { box-shadow: 0 0 0 14px rgba(139,207,98,.12), 0 24px 60px -16px rgba(0,0,0,.6); } }
+.anim #portada .cover-logo { animation: logo-in 1s var(--ease-spring) both, halo 4s ease-in-out 1.2s infinite; }
+.anim #portada .cover-kicker { animation: rise-in .8s var(--ease-out) .35s both; }
+.anim #portada .cover-title { animation: rise-in .9s var(--ease-out) .5s both; }
+.anim #portada .cover-sub { animation: rise-in .9s var(--ease-out) .65s both; }
+.anim #portada .contact-chips a { animation: rise-in .7s var(--ease-out) both; }
+.anim #portada .contact-chips a:nth-child(1) { animation-delay: .8s; }
+.anim #portada .contact-chips a:nth-child(2) { animation-delay: .9s; }
+.anim #portada .contact-chips a:nth-child(3) { animation-delay: 1s; }
+.anim .cover-ring { animation: ring-float 12s ease-in-out infinite; }
+.anim .cover-ring-2 { animation-duration: 15s; animation-direction: reverse; }
+
+/* Aparición al scrollear */
+.anim .reveal { opacity: 0; transform: translateY(40px) scale(.985); transition: opacity .8s var(--ease-out), transform .9s var(--ease-out); }
+.anim .reveal.in-view { opacity: 1; transform: none; }
+.anim .card, .anim .index-grid > li, .anim .custom { opacity: 0; transform: translateY(28px) scale(.96); transition: opacity .6s var(--ease-out), transform .7s var(--ease-out), box-shadow .25s ease, border-color .25s ease; transition-delay: calc(var(--i, 0) * 55ms); }
+.anim .card.in-view, .anim .index-grid > li.in-view, .anim .custom.in-view { opacity: 1; transform: none; }
+
+/* Banda de categoría: despliegue de izquierda a derecha */
+.anim .sec-band { clip-path: inset(0 100% 0 0); transition: clip-path 1s var(--ease-out); }
+.anim .sec-band.in-view { clip-path: inset(0 0 0 0); }
+.anim .sec-band .sec-num, .anim .sec-band .sec-name, .anim .sec-band .sec-meta { opacity: 0; transform: translateX(-24px); transition: opacity .6s var(--ease-out) .35s, transform .7s var(--ease-out) .35s; }
+.anim .sec-band .sec-name { transition-delay: .45s; }
+.anim .sec-band .sec-meta { transition-delay: .55s; }
+.anim .sec-band.in-view .sec-num, .anim .sec-band.in-view .sec-name, .anim .sec-band.in-view .sec-meta { opacity: 1; transform: none; }
+
+/* Durante el desplazamiento animado todo queda visible (efecto de pasar páginas) */
+.anim.jumping .reveal, .anim.jumping .card, .anim.jumping .index-grid > li, .anim.jumping .custom { opacity: 1; transform: none; transition: none; }
+.anim.jumping .sec-band { clip-path: inset(0 0 0 0); transition: none; }
+.anim.jumping .sec-band * { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+/* Llegada a una sección desde el índice o el menú: se vuelve a desplegar */
+@keyframes band-sweep { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes num-pop { 0% { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes card-wave { 0% { transform: translateY(18px) scale(.95); opacity: .3; } 100% { transform: none; opacity: 1; } }
+@keyframes sheet-glow { 0% { box-shadow: 0 0 0 0 rgba(139,207,98,.0), 0 12px 32px -12px rgba(18,58,43,.22); } 30% { box-shadow: 0 0 0 6px rgba(139,207,98,.45), 0 24px 50px -16px rgba(18,58,43,.35); } 100% { box-shadow: 0 0 0 0 rgba(139,207,98,0), 0 12px 32px -12px rgba(18,58,43,.22); } }
+.anim .sheet.landed { animation: sheet-glow 1.4s var(--ease-out); }
+.anim .sheet.landed .sec-band { animation: band-sweep .9s var(--ease-out); }
+.anim .sheet.landed .sec-num { animation: num-pop .8s var(--ease-spring) .25s both; }
+.anim .sheet.landed .card { animation: card-wave .6s var(--ease-out) both; animation-delay: calc(.2s + var(--i, 0) * 45ms); }
+
+/* Interacción */
+.anim .card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px -14px rgba(18,58,43,.35); border-color: var(--mint); transition-delay: 0s; }
+.card-img img { transition: transform .5s var(--ease-out); }
+.card:hover .card-img img { transform: scale(1.07) rotate(-1.5deg); }
+.index-img img { transition: transform .5s var(--ease-out); }
+.index-tile:hover .index-img img { transform: scale(1.08) translateY(-3px); }
+.index-tile:active, .card:active, .toolbar-pdf:active, .contact-chips a:active { transform: scale(.97); }
+.contact-chips a { transition: background .2s ease, transform .2s var(--ease-spring); }
+.contact-chips a:hover { transform: translateY(-2px); }
+.toolbar-pdf { transition: background .2s ease, transform .15s ease; }
+.toolbar-pdf:hover { transform: translateY(-1px); }
+.card-rows li b { transition: background .2s ease, color .2s ease; }
+.card-rows li:hover b { background: var(--g-700); color: var(--cream); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
 /* ── Impresión / PDF: márgenes A4, tapas a sangre ──────────────────── */
 @page { size: A4; margin: 12mm 0 12mm; }
 @page cover { margin: 0; }
 @media print {
+  .anim .reveal, .anim .card, .anim .index-grid > li, .anim .custom, .anim .sec-band, .anim .sec-band * { opacity: 1 !important; transform: none !important; clip-path: none !important; transition: none !important; animation: none !important; }
   body.catalog-body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .toolbar, .no-results { display: none !important; }
   .sheets { max-width: none; padding: 0; gap: 0; display: block; }

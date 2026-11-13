@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Download, Search, X } from "lucide-react";
 import { ShareButton } from "./ShareButton";
+import { scrollToSection } from "./Motion";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
@@ -41,8 +42,7 @@ export function Toolbar({ sections }: Props) {
           className="toolbar-select"
           value=""
           onChange={(e) => {
-            const el = document.getElementById(e.target.value);
-            el?.scrollIntoView({ behavior: "smooth", block: "start" });
+            scrollToSection(e.target.value);
           }}
         >
           <option value="" disabled>

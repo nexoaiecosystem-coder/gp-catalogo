@@ -4,6 +4,7 @@ import { illustrationFor } from "./_illustrations";
 import { Illustration } from "./_components/Illustration";
 import { Toolbar } from "./_components/Toolbar";
 import { ContactLinks } from "./_components/Contact";
+import { Motion } from "./_components/Motion";
 
 // Imágenes de los productos personalizables (renders con "TU LOGO").
 const CUSTOM_IMG: Record<string, string> = {
@@ -72,7 +73,7 @@ function Cover({ total, sections }: { total: number; sections: number }) {
 
 function Index({ catalog }: { catalog: Section[] }) {
   return (
-    <section className="sheet sheet-index">
+    <section className="sheet sheet-index reveal">
       <SheetChrome page={2}>
         <h2 className="index-title">
           <span>Índice</span>
@@ -113,7 +114,7 @@ function Index({ catalog }: { catalog: Section[] }) {
 
 function SectionSheet({ section, index }: { section: Section; index: number }) {
   return (
-    <section id={section.slug} className="sheet" data-section>
+    <section id={section.slug} className="sheet reveal" data-section>
       <SheetChrome page={index + 3}>
         <header className="sec-band">
           <span className="sec-num">{pad(index + 1)}</span>
@@ -152,7 +153,7 @@ function SectionSheet({ section, index }: { section: Section; index: number }) {
 function BackCover({ page, num }: { page: number; num: number }) {
   return (
     <>
-      <section id="personalizado" className="sheet" data-section>
+      <section id="personalizado" className="sheet reveal" data-section>
         <SheetChrome page={page}>
           <header className="sec-band sec-band-teal">
             <span className="sec-num">{pad(num)}</span>
@@ -187,7 +188,7 @@ function BackCover({ page, num }: { page: number; num: number }) {
           </div>
         </SheetChrome>
       </section>
-      <section className="sheet sheet-cover sheet-back">
+      <section className="sheet sheet-cover sheet-back reveal">
         <div className="cover-ring" aria-hidden />
         <div className="cover-logo">
           {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
@@ -212,6 +213,7 @@ export default function CatalogoPage() {
 
   return (
     <>
+      <Motion />
       <Toolbar sections={catalog.map((s) => ({ slug: s.slug, name: s.name }))} />
       <main className="sheets">
         <Cover total={total} sections={catalog.length} />
