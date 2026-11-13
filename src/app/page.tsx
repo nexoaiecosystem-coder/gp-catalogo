@@ -94,7 +94,7 @@ function Index({ catalog }: { catalog: Section[] }) {
               </li>
             );
           })}
-          <li>
+          <li className="index-li-custom">
             <a href="#personalizado" className="index-tile index-tile-custom">
               <div className="index-img">
                 {/* eslint-disable-next-line @next/next/no-img-element -- export estático */}
