@@ -32,7 +32,8 @@ function SheetChrome({ page, children }: { page: number; children: React.ReactNo
       {children}
       <div className="sheet-foot">
         <span>
-          {CONTACT.whatsappDisplay} · {CONTACT.instagramHandle} · {CONTACT.address}
+          <a href={`https://wa.me/${CONTACT.whatsappNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp {CONTACT.whatsappDisplay}</a> · <a href={CONTACT.instagramUrl} target="_blank" rel="noopener noreferrer">{CONTACT.instagramHandle}</a> ·{" "}
+          {CONTACT.address}
         </span>
         <span className="sheet-num">{pad(page)}</span>
       </div>
@@ -58,8 +59,8 @@ function Cover({ total, sections }: { total: number; sections: number }) {
         {total} productos en {sections} categorías para gastronomía, comercios y empresas.
       </p>
       <div className="cover-contact">
-        <span>{CONTACT.whatsappDisplay}</span>
-        <span>{CONTACT.instagramHandle}</span>
+        <a href={`https://wa.me/${CONTACT.whatsappNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp {CONTACT.whatsappDisplay}</a>
+        <a href={CONTACT.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram {CONTACT.instagramHandle}</a>
         <span>{CONTACT.address}</span>
       </div>
     </section>
@@ -180,8 +181,8 @@ function BackCover({ page }: { page: number }) {
         </p>
         <p className="back-claim">¡Hacemos que tu presentación se destaque!</p>
         <div className="cover-contact">
-          <span>WhatsApp {CONTACT.whatsappDisplay}</span>
-          <span>{CONTACT.instagramHandle}</span>
+          <a href={`https://wa.me/${CONTACT.whatsappNumber}`} target="_blank" rel="noopener noreferrer">WhatsApp {CONTACT.whatsappDisplay}</a>
+          <a href={CONTACT.instagramUrl} target="_blank" rel="noopener noreferrer">Instagram {CONTACT.instagramHandle}</a>
           <span>{CONTACT.email}</span>
           <span>{CONTACT.address}</span>
         </div>
