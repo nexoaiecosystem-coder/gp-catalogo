@@ -16,10 +16,16 @@ function reducedMotion() {
 function land(target: HTMLElement) {
   // Todo lo que quedó por encima ya se "vio": se marca como visible y se sale del modo desplazamiento.
   const bottom = window.innerHeight;
+  // Lo que ya está en pantalla queda visible tal cual: sin transición de entrada.
+  const shown: Element[] = [];
   document.querySelectorAll(".reveal, .card, .index-grid > li, .custom, .sec-band").forEach((el) => {
-    if (el.getBoundingClientRect().top < bottom) el.classList.add("in-view");
+    if (el.getBoundingClientRect().top < bottom) {
+      if (!el.classList.contains("in-view")) shown.push(el);
+      el.classList.add("in-view", "no-anim");
+    }
   });
   document.documentElement.classList.remove("jumping");
+  requestAnimationFrame(() => requestAnimationFrame(() => shown.forEach((el) => el.classList.remove("no-anim"))));
   target.classList.remove("landed");
   void target.offsetWidth; // reinicia la animación
   target.classList.add("landed");

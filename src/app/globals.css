@@ -218,16 +218,13 @@ body.catalog-body {
 .anim.jumping .reveal, .anim.jumping .card, .anim.jumping .index-grid > li, .anim.jumping .custom { opacity: 1; transform: none; transition: none; }
 .anim.jumping .sec-band { clip-path: inset(0 0 0 0); transition: none; }
 .anim.jumping .sec-band * { opacity: 1 !important; transform: none !important; transition: none !important; }
+.anim .in-view.no-anim, .anim .no-anim .sec-num, .anim .no-anim .sec-name, .anim .no-anim .sec-meta { transition: none !important; }
 
-/* Llegada a una sección desde el índice o el menú: se vuelve a desplegar */
-@keyframes band-sweep { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+/* Llegada a una sección desde el índice o el menú: solo brillo y número (sin volver a esconder nada) */
 @keyframes num-pop { 0% { transform: scale(.4); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); } }
-@keyframes card-wave { 0% { transform: translateY(18px) scale(.95); opacity: .3; } 100% { transform: none; opacity: 1; } }
 @keyframes sheet-glow { 0% { box-shadow: 0 0 0 0 rgba(139,207,98,.0), 0 12px 32px -12px rgba(18,58,43,.22); } 30% { box-shadow: 0 0 0 6px rgba(139,207,98,.45), 0 24px 50px -16px rgba(18,58,43,.35); } 100% { box-shadow: 0 0 0 0 rgba(139,207,98,0), 0 12px 32px -12px rgba(18,58,43,.22); } }
 .anim .sheet.landed { animation: sheet-glow 1.4s var(--ease-out); }
-.anim .sheet.landed .sec-band { animation: band-sweep .9s var(--ease-out); }
 .anim .sheet.landed .sec-num { animation: num-pop .8s var(--ease-spring) .25s both; }
-.anim .sheet.landed .card { animation: card-wave .6s var(--ease-out) both; animation-delay: calc(.2s + var(--i, 0) * 45ms); }
 
 /* Interacción */
 .anim .card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px -14px rgba(18,58,43,.35); border-color: var(--mint); transition-delay: 0s; }
